@@ -1,4 +1,4 @@
-Table es_user {
+Table user {
   id integer [primary key]
   address_id integer
   first_name varchar(255)
@@ -12,24 +12,24 @@ Table es_user {
   is_delete bool
 }
 
-Table es_book {
+Table book {
   id integer [primary key]
-  seller_id integer
+  seller_id integer 
   category_id integer
+  publication_id integer
   author_id integer
+  book_image_id integer
   title varchar(255)
-  book_image varchar(255)
   isbn varchar(20) [unique]
   description text
   stock integer
-  actual_price float
-  selling_price float
-  discount float
+  actual_price decimal
+  discount decimal
   created_at timestamp 
   updated_at timestamp
 }
 
-Table es_author {
+Table author {
   id integer [primary key]
   first_name varchar(255)
   last_name varchar(255)
@@ -39,7 +39,7 @@ Table es_author {
   updated_at timestamp
 }
 
-Table es_address {
+Table address {
   id integer [primary key]
   user_id integer
   address text
@@ -47,33 +47,47 @@ Table es_address {
   updated_at timestamp
 }
 
-Table es_book_category {
+Table book_category {
   id integer [primary key]
   name varchar(255)
   created_at timestamp
 }
 
-Table es_order {
+Table book_publication {
+  id integer [primary key]
+  name varchar(255)
+  created_at timestamp
+}
+Table book_images {
+  id integer [primary key]
+  front_image varchar(255)
+  back_image varchar(255)
+  misc_image1 varchar(255)
+  misc_image2 varchar(255)
+  created_at timestamp
+}
+
+Table order {
   id integer [primary key]
   user_id integer
-  total_amount float
+  total_amount decimal
   status varchar(50)
   created_at timestamp 
   updated_at timestamp
 }
 
-Table es_order_summary {
+Table order_detail {
   id integer [primary key]
   book_id integer
   order_id integer
   books_quantity integer
-  price float
+  price decimal
   status varchar(50)
   created_at timestamp 
   updated_at timestamp
 }
 
-Table es_cart {
+Table cart_item {
   id integer [primary key]
   book_id integer
   user_id integer
@@ -82,13 +96,18 @@ Table es_cart {
   updated_at timestamp
 }
 
+
 // Updated Mappings
-Ref: "es_user"."address_id" < "es_address"."id"
-Ref: "es_user"."id" < "es_book"."seller_id"
-Ref: "es_book"."category_id" > "es_book_category"."id"
-Ref: "es_book"."author_id" > "es_author"."id"
-Ref: "es_user"."id" < "es_order"."user_id"
-Ref: "es_user"."id" < "es_cart"."user_id"
-Ref: "es_book"."id" > "es_cart"."book_id"
-Ref: "es_book"."id" > "es_order_summary"."book_id"
-Ref: "es_order"."id" < "es_order_summary"."order_id"
+Ref: "user"."address_id" < "address"."id"
+Ref: "user"."id" < "book"."seller_id"
+Ref: "book"."category_id" > "book_category"."id"
+Ref: "book"."author_id" > "author"."id"
+Ref: "user"."id" < "order"."user_id"
+Ref: "user"."id" < "cart_item"."user_id"
+Ref: "book"."id" > "cart_item"."book_id"
+Ref: "book"."id" > "order_detail"."book_id"
+Ref: "order"."id" < "order_detail"."order_id"
+
+Ref: "book_publication"."id" < "book"."publication_id"
+
+Ref: "book"."book_image_id" - "book_images"."id"

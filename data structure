@@ -1,0 +1,94 @@
+Table es_user {
+  id integer [primary key]
+  address_id integer
+  first_name varchar(255)
+  last_name varchar(255)
+  email varchar(255) [unique]
+  mobile varchar(20)
+  role varchar(50)
+  password varchar(255)
+  created_at timestamp
+  updated_at timestamp
+  is_delete bool
+}
+
+Table es_book {
+  id integer [primary key]
+  seller_id integer
+  category_id integer
+  author_id integer
+  title varchar(255)
+  book_image varchar(255)
+  isbn varchar(20) [unique]
+  description text
+  stock integer
+  actual_price float
+  selling_price float
+  discount float
+  created_at timestamp 
+  updated_at timestamp
+}
+
+Table es_author {
+  id integer [primary key]
+  first_name varchar(255)
+  last_name varchar(255)
+  email varchar(255) [unique]
+  bio text
+  created_at timestamp 
+  updated_at timestamp
+}
+
+Table es_address {
+  id integer [primary key]
+  user_id integer
+  address text
+  created_at timestamp 
+  updated_at timestamp
+}
+
+Table es_book_category {
+  id integer [primary key]
+  name varchar(255)
+  created_at timestamp
+}
+
+Table es_order {
+  id integer [primary key]
+  user_id integer
+  total_amount float
+  status varchar(50)
+  created_at timestamp 
+  updated_at timestamp
+}
+
+Table es_order_summary {
+  id integer [primary key]
+  book_id integer
+  order_id integer
+  books_quantity integer
+  price float
+  status varchar(50)
+  created_at timestamp 
+  updated_at timestamp
+}
+
+Table es_cart {
+  id integer [primary key]
+  book_id integer
+  user_id integer
+  quantity integer
+  created_at timestamp 
+  updated_at timestamp
+}
+
+// Updated Mappings
+Ref: "es_user"."address_id" < "es_address"."id"
+Ref: "es_user"."id" < "es_book"."seller_id"
+Ref: "es_book"."category_id" > "es_book_category"."id"
+Ref: "es_book"."author_id" > "es_author"."id"
+Ref: "es_user"."id" < "es_order"."user_id"
+Ref: "es_user"."id" < "es_cart"."user_id"
+Ref: "es_book"."id" > "es_cart"."book_id"
+Ref: "es_book"."id" > "es_order_summary"."book_id"
+Ref: "es_order"."id" < "es_order_summary"."order_id"
